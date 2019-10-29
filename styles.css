@@ -1,0 +1,20 @@
+.year-cell{
+    height: 40px;
+    width: 40px;
+    display: table-cell;
+    border: 0.1px solid black;
+}
+
+.year-row{
+    display: table-row;
+}
+
+.year-table{
+    display: table;
+    margin: auto;
+    margin-top: 200px;
+}
+
+body{
+    margin-bottom: 400px;
+}
