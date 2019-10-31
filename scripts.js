@@ -1,8 +1,9 @@
 $(document).ready(() => {
     console.log("hi");
-
+    //predefined color choices for each mood
     colors = ["lightcoral", "greenyellow", "deepskyblue", "gold"]
 
+    //create year table with rows and cells appended with corresponding colors
     $table = $("#year-table");
     let id = 0;
     for(let i = 0; i < 18; i++){
