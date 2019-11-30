@@ -10,12 +10,14 @@ $(document).ready(() => {
         row = $("<div class='year-row'></div>");
         for(let j = 0; j < 20; j++){
             cell = $("<div id='" + id + "' class='year-cell'></div>");
+            //assign random color for now
             cell.css("background-color", colors[Math.floor(Math.random()*4)]);
             row.append(cell);
             id++;
         }
         $table.append(row);
     }
+    //the final unfinished row
     row = $("<div class='year-row'></div>");
     for(let j = 0; j < 5; j++){
         cell = $("<div id='" + id + "' class='year-cell'></div>");
