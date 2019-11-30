@@ -1,0 +1,99 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Mind Rewind</title>
+    <meta name="description" content="A mental health tracker">
+    <meta name="author" content="RupaliSaini">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+</head>
+
+<body class="is-dark">
+<div id="root">
+<nav class="navbar" role="navigation" aria-label="main navigation">
+<div class="navbar-brand">
+    <h1 class="navbar-item">
+        <strong>Mind Rewind</strong>
+    </h1>
+</div>
+
+<div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+    <a class="navbar-item">
+        The World
+    </a>
+
+    <a class="navbar-item" href="you.html">
+        You
+    </a>
+
+    <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+        More
+        </a>
+
+        <div class="navbar-dropdown">
+        <a class="navbar-item">
+            About
+        </a>
+        </div>
+    </div>
+    </div>
+
+    <div class="navbar-end">
+    <div class="navbar-item">
+        <div class="buttons">
+        <a class="button is-primary" href="sign-up-form.html">
+            <strong>Sign up</strong>
+        </a>
+        <a class="button is-light" href="log-in-form.html">
+            Log in
+        </a>
+        </div>
+    </div>
+    </div>
+</div>
+</nav>
+<div class="form-pop">
+
+<div class="field">
+  <label class="label">Name</label>
+  <div class="control">
+    <input class="input" type="text" placeholder="Your Name" id="name-sign-up">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">Username</label>
+  <div class="control">
+    <input class="input is-success" type="text" placeholder="Username" id="username-sign-up">
+  </div>
+  <p class="help is-success">This username is available</p>
+</div>
+
+<div class="field">
+    <label class="label">Password</label>
+    <p class="control">
+        <input class="input" type="password" placeholder="Password" id="password-sign-up">
+    </p>
+</div>
+
+<div class="field is-grouped">
+  <div class="control">
+    <button class="button is-link" id="sign-up" type="button">Submit</button>
+  </div>
+  <div class="control">
+    <button class="button is-link is-light">Cancel</button>
+  </div>
+</div>
+</div>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="scripts.js"></script>
+</body>
+</html>

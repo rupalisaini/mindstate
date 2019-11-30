@@ -25,48 +25,27 @@ $(document).ready(() => {
     }
     $table.append(row);**/
     $('#root').on('click', '#sign-up', newAccount);
-    $('#root').on('click', '#log-in', logIn);
 });
+
+//function newAccount(){
+//    console.log("hello");
+//}
 
 const pubRoot = new axios.create({
     baseURL: "http://localhost:3000/account"
 });
 
-async function newAccount(){
-    event.preventDefault();
+export async function newAccount(){
     let username = $('#username-sign-up').val();
     let password = $('#password-sign-up').val();
     let name = $('#name-sign-up').val();
-
-    let r = axios.post('http://localhost:3000/account/create',
-    {
-        name: username,
-        pass: password,
-        data: {
-        other: name,
+    const result = await pubRoot.post(`/create/`, {
+        "name": username,
+        "pass": password,
+        "data": {
+            "role": 2,
+            "description": name
         }
     });
-
-    r.then(response => {
-    console.log(response.data);
-    }).catch(error => {
-    console.log(error);
-    });
-}
-
-async function logIn(){
-    event.preventDefault();
-    let username = $('#username-log-in').val();
-    let password = $('#password-log-in').val();
-    let r = axios.post('http://localhost:3000/account/login',
-    {
-        name: username,
-        pass: password
-    });
-
-    r.then(response => {
-    console.log(response.data);
-    }).catch(error => {
-    console.log(error);
-    });
+    return result;
 }

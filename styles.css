@@ -17,4 +17,47 @@
 
 body{
     margin-bottom: 400px;
+    background-color: hsl(0, 0%, 96%);
+    height: 100%;
+}
+
+html{
+    height: 100%;
+}
+
+.form-pop{
+    width: 400px;
+    margin: auto;
+    margin-top: 100px;
+    background-color: white;
+    padding: 50px;
+    border-radius: 10px;
+}
+
+.day-form{
+    background-color: white;
+    padding: 30px!important;
+    margin: 30px;
+    border-radius: 10px;
+}
+
+.column1{
+    display: block;
+    width: 70%;
+}
+
+.column2{
+    display: block;
+    width: 35%;
+}
+
+.columns-custom{
+    display: flex;
+}
+
+.progress-report{
+    background-color: white;
+    padding: 30px!important;
+    margin: 30px;
+    border-radius: 10px;
 }
