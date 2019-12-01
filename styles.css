@@ -1,18 +1,21 @@
-.year-cell{
-    height: 40px;
-    width: 40px;
+.progress-cell{
+    height: 180px;
+    width: 180px;
     display: table-cell;
-    border: 0.1px solid black;
+    border-radius: 20px;
+    opacity: 0.75;
 }
 
-.year-row{
+.progress-row{
     display: table-row;
 }
 
-.year-table{
+.progress-table{
     display: table;
     margin: auto;
     margin-top: 200px;
+    border-spacing: 20px;
+    border-collapse: separate;
 }
 
 body{
@@ -25,6 +28,10 @@ html{
     height: 100%;
 }
 
+#root{
+    background-color: hsl(0, 0%, 96%);
+}
+
 .form-pop{
     width: 400px;
     margin: auto;
@@ -34,21 +41,30 @@ html{
     border-radius: 10px;
 }
 
+.you-right-block{
+    background-color: white;
+    padding: 30px!important;
+    margin: 30px 30px 30px 0px;
+    border-radius: 10px;
+    height: auto;
+}
+
 .day-form{
     background-color: white;
     padding: 30px!important;
-    margin: 30px;
+    margin: 30px 30px 30px 0px;
     border-radius: 10px;
+    height: 440px;
 }
 
 .column1{
     display: block;
-    width: 70%;
+    width: 64%;
 }
 
 .column2{
     display: block;
-    width: 35%;
+    width: 37%;
 }
 
 .columns-custom{
@@ -57,7 +73,7 @@ html{
 
 .progress-report{
     background-color: white;
-    padding: 30px!important;
-    margin: 30px;
+    padding: 20px!important;
+    margin: 30px 30px 30px 30px;
     border-radius: 10px;
 }
