@@ -1,27 +1,41 @@
-sampleArr = [{date: new Date(01/01/2019), how: 2, about: "hi"}, 
-            {date: new Date(01/2/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/4/2019), how: 4, about: "hi"}, 
-            {date: new Date(01/05/2019), how: 5, about: "hi"}, 
-            {date: new Date(01/06/2019), how: 1, about: "hi"}, 
-            {date: new Date(01/10/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/11/2019), how: 5, about: "hi"}, 
-            {date: new Date(01/14/2019), how: 2, about: "hi"}, 
-            {date: new Date(01/18/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/20/2019), how: 1, about: "hi"}, 
-            {date: new Date(01/21/2019), how: 5, about: "hi"}, 
-            {date: new Date(01/22/2019), how: 4, about: "hi"}, 
-            {date: new Date(01/23/2019), how: 4, about: "hi"}, 
-            {date: new Date(01/25/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/26/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/27/2019), how: 2, about: "hi"}, 
-            {date: new Date(01/28/2019), how: 1, about: "hi"}, 
-            {date: new Date(01/29/2019), how: 2, about: "hi"}, 
-            {date: new Date(01/30/2019), how: 3, about: "hi"}, 
-            {date: new Date(01/31/2019), how: 4, about: "hi"}, 
-            {date: new Date(02/01/2019), how: 2, about: "hi"}, 
-            {date: new Date(02/12/2019), how: 3, about: "hi"}, 
-            {date: new Date(02/14/2019), how: 1, about: "hi"}, 
-            {date: new Date(02/18/2019), how: 5, about: "hi"}]
+google.load("visualization", "1", {packages:["corechart"]});
+google.charts.load('current', {'packages':['corechart', 'line']});
+google.charts.setOnLoadCallback(makeUserChart1);
+
+Date.prototype.dmyy = function() {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+  
+    return (mm + "/" + dd + "/" + this.getFullYear());
+};
+
+//google.load('visualization', '1', { packages: ['corechart', 'controls'] });
+sampleArr = [{date: new Date(2019,1,1), how: 2, about: "hi"}, 
+            {date: new Date(2019,1,2), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,4), how: 4, about: "hi"}, 
+            {date: new Date(2019,1,6), how: 5, about: "hi"}, 
+            {date: new Date(2019,1,7), how: 1, about: "hi"}, 
+            {date: new Date(2019,1,8), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,9), how: 5, about: "hi"}, 
+            {date: new Date(2019,1,10), how: 2, about: "hi"}, 
+            {date: new Date(2019,1,11), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,12), how: 1, about: "hi"}, 
+            {date: new Date(2019,1,13), how: 5, about: "hi"}, 
+            {date: new Date(2019,1,14), how: 4, about: "hi"}, 
+            {date: new Date(2019,1,15), how: 4, about: "hi"}, 
+            {date: new Date(2019,1,16), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,17), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,18), how: 2, about: "hi"}, 
+            {date: new Date(2019,1,19), how: 1, about: "hi"}, 
+            {date: new Date(2019,1,20), how: 2, about: "hi"}, 
+            {date: new Date(2019,1,21), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,22), how: 4, about: "hi"}, 
+            {date: new Date(2019,1,23), how: 2, about: "hi"}, 
+            {date: new Date(2019,1,24), how: 3, about: "hi"}, 
+            {date: new Date(2019,1,25), how: 1, about: "hi"}, 
+            {date: new Date(2019,1,26), how: 5, about: "hi"},
+            {date: new Date(2019,1,27), how: 1, about: "hi"}, 
+            {date: new Date(2019,1,28), how: 1, about: "hi"}]
 
 $(document).ready(() => {
     console.log("hi");
@@ -31,44 +45,7 @@ $(document).ready(() => {
     $('#root').on('click', '#log-in', logIn);
     $('#root').on('click', '#log-day', logDay);
     fillUserHistoryLog();
-
-    var ctx = $('#myChart');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+    makeUserChart1();
 });
 
 async function newAccount(){
@@ -245,25 +222,91 @@ function fillUserHistoryLog(){
     let id = 0;
     let i;
 
-    for(i = 0; i < sampleArr.length; i+=4){
+    for(i = 0; i+4 < sampleArr.length; i+=4){
         row = $("<div class='progress-row'></div>");
         for(let j = i; j < i+4; j++){
             cell = $("<div id='" + id + "' class='progress-cell'></div>");
             cell.css("background-color", colors[sampleArr[j].how - 1]);
+            cell.html(sampleArr[j].date.dmyy());
             row.append(cell);
             id++;
         }
         $table.append(row);
     }
+    console.log(i)
     //the final unfinished row
-    if(sampleArr.length%4 != 0){
+    if(!(i >= sampleArr.length)){
         row = $("<div class='progress-row'></div>");
         for(let j = i; j < sampleArr.length; j++){
-            cell = $("<div id='" + id + "' class='yeprogressar-cell'></div>");
-            cell.css("background-color", colors[Math.floor(Math.random()*4)]);
+            cell = $("<div id='" + id + "' class='progress-cell'></div>");
+            cell.css("background-color", colors[sampleArr[j].how - 1]);
+            cell.html(sampleArr[j].date.dmyy());
             row.append(cell);
             id++;
         }
         $table.append(row);
     }
 }
+
+function mapDateAndMood(a){
+    return [a.date, a.how];
+}
+
+function makeUserChart1() {
+    console.log(sampleArr)
+    sampleDateAndMood = sampleArr.map(mapDateAndMood);
+    console.log(sampleDateAndMood);
+
+    // Create the data table.
+    var data = new google.visualization.DataTable(sampleDateAndMood);
+    data.addColumn('date', 'Date');
+    data.addColumn('number', 'Mood');
+    data.addRows(sampleDateAndMood);
+
+    console.log(data);
+  
+    // Set chart options
+    var options = {
+        curveType: 'function',
+        legend: { 
+            position: 'bottom',
+            textStyle: {
+                color: '#FFFFFF',
+                fontName: "Helvetica Neue",
+            },
+        },
+        height: 250,
+        width: 650,
+        colors: ['#FFFFFF'],
+        lineWidth: 1,
+        vAxis: {
+            gridlines: {
+                color: '#FFFFFF'
+            },
+            format: '0',
+            textStyle:{color: '#FFFFFF', fontName: "Helvetica Neue",},
+            viewWindow:{
+                max:6,
+                min:0
+            }
+        },
+        hAxis: {
+            format: 'M/d/yy',
+            gridlines: {
+                color: 'transparent'
+            },
+            textStyle:{color: '#FFFFFF', fontName: "Helvetica Neue",},
+            baselineColor: '#FFFFFF'
+        },
+        baselineColor: '#FFFFFF',
+        chartArea: {
+            width: '80%', 
+            height: '60%'
+        },
+        backgroundColor: { fill:'transparent' },
+    };
+  
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('myChart'));
+    chart.draw(data, options);
+  }
