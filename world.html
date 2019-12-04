@@ -10,6 +10,8 @@
     <meta name="author" content="RupaliSaini">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
@@ -17,27 +19,19 @@
 <body class="is-dark">
 <div id="root">
 <nav class="navbar" id="navbar" role="navigation" aria-label="main navigation"></nav>
-<div class="form-pop">
-<div class="field">
-  <label class="label">Username</label>
-  <div class="control">
-    <input class="input" type="text" placeholder="Username" id="username-log-in">
-  </div>
-</div>
 
-<div class="field" id="password-field">
-    <label class="label">Password</label>
-    <p class="control">
-        <input class="input" type="password" placeholder="Password" id="password-log-in">
-    </p>
+<div class="columns-custom">
+    <div class="column3">
+      <div class="progress-report progress-table-world" id="progress-world"></div>
+    </div>
+    <div class="column4">
+        <div class="world-right-block green-bg">
+            Post your positivity:
+        </div>
+        <div class="world-right-block white-bg">
+        </div>
+    </div>
   </div>
-
-<div class="field">
-  <div class="control">
-    <button class="button is-link" id="log-in">Log in</button>
-  </div>
-</div>
-</div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
