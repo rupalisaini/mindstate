@@ -14,16 +14,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="scripts.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body class="is-dark">
 <div id="root">
 <nav class="navbar" role="navigation" id="navbar" aria-label="main navigation"></nav>
 <div class="columns-custom">
-    <div class="column1">
-      <div class="progress-report progress-table" id="progress">
-      </div>
-    </div>
+    <div class="column1" id="user-history"></div>
     <div class="column2">
         <div class="day-form">
             <div class="field">
@@ -55,6 +57,13 @@
                 <textarea class="textarea" id="about" placeholder="Tell us about your day :)"></textarea>
                 </div>
             </div>
+
+            <div class="field">
+                    <label class="label">Tags:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="log-tags" placeholder="Tag your log">
+                    </div>
+                </div>
             
             <div class="field is-grouped">
                 <div class="control">
@@ -64,20 +73,18 @@
                 <button class="button is-link is-light">Cancel</button>
                 </div>
             </div>
+            <!--<input class="input" id="log-date-2">-->
         </div>
         <div class="you-right-block green-bg">
-            <div class="line-chart-heading">Track your health:</div>
+            <div class="line-chart-heading" id="chart-1-head"></div>
             <div id="myProgressChart"></div>
         </div>
         <div class="you-right-block white-bg">
-            <div class="calendar-chart-heading">Days you logged:</div>
+            <div class="calendar-chart-heading" id="chart-2-head"></div>
             <div class="opacity" id="myYearChart"></div>
         </div>
     </div>
   </div>
 </div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="scripts.js"></script>
 </body>
 </html>

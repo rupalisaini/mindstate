@@ -12,7 +12,6 @@ Date.prototype.dm = function() {
     return (mm + "/" + dd);
 };
 
-//google.load('visualization', '1', { packages: ['corechart', 'controls'] });
 sampleArr = [{date: new Date(2019,1,1), how: 2, about: "hi"}, 
             {date: new Date(2019,6,2), how: 3, about: "hi"}, 
             {date: new Date(2019,1,4), how: 4, about: "hi"}, 
@@ -580,7 +579,10 @@ $(document).ready(() => {
     if(window.location.href == "http://localhost:3001/you.html"){
         google.charts.load('current', {'packages':['corechart', 'line', 'calendar']});
         google.charts.setOnLoadCallback(drawUserCharts);    
-        fillUserHistoryLog();
+        $("#log-tags" ).autocomplete({
+            source: [ "c++", "java", "php", "coldfusion", "javascript", "asp", "ruby" ],
+            delay: 1200,
+        });
     }
     fillWorldHistoryLog();
 });
@@ -801,40 +803,43 @@ function compare(a, b) {
     return comparison;
 }
 
-function fillUserHistoryLog(){
-    $root = $("#progress");
+function fillUserHistoryLog(logs){
+    console.log(logs);
+    $root = $("#user-history");
 
     //predefined color choices for each mood
     colors = ["#E66641", "#F29A4D", "#FCCE00", "#73C38F", "#00ABB7"];
 
     //create year table with rows and cells appended with corresponding colors
-    $table = $("#progress");
+    $table = $(`<div class="progress-report progress-table" id="progress"></div>`);
     let id = 0;
     let i;
 
-    for(i = 0; i+4 < sampleArr.length; i+=4){
+    for(i = 0; i+4 < logs.length; i+=4){
         row = $("<div class='progress-row'></div>");
         for(let j = i; j < i+4; j++){
             cell = $("<div id='" + id + "' class='progress-cell'></div>");
-            cell.css("background-color", colors[sampleArr[j].how - 1]);
-            cell.html(sampleArr[j].date.dmyy());
+            cell.css("background-color", colors[logs[j].how - 1]);
             row.append(cell);
             id++;
         }
         $table.append(row);
     }
     //the final unfinished row
-    if(!(i >= sampleArr.length)){
+    if(!(i >= logs.length)){
         row = $("<div class='progress-row'></div>");
-        for(let j = i; j < sampleArr.length; j++){
+        for(let j = i; j < logs.length; j++){
             cell = $("<div id='" + id + "' class='progress-cell'></div>");
-            cell.css("background-color", colors[sampleArr[j].how - 1]);
-            cell.html(sampleArr[j].date.dmyy());
+            cell.css("background-color", colors[logs[j].how - 1]);
+            dateObj = new Date(logs[j].date);
+            cell.html(dateObj.dmyy());
             row.append(cell);
             id++;
         }
         $table.append(row);
     }
+
+    $root.append($table);
 }
 
 function fillWorldHistoryLog(){
@@ -884,15 +889,26 @@ function drawUserCharts(){
     });
 
     b.then(response => {
+        console.log(response.data.result);
+        fillUserHistoryLog(response.data.result);
         makeUserChart1(response.data.result);
         makeUserChart2(response.data.result);
     }).catch(error => {
         console.log(error);
+        $('#chart-1-head').html("Log some days to track your progress!");
+        $('#chart-2-head').html("Log some days to track your progress!");
+        $root = $("#user-history");
+        $track = $(`<div class="progress-report" id="progress"></div>`);       
+        $track.html("This is where your daily logs will be tracked!"); 
+        $root.append($track);
     });
 }
 
 function makeUserChart1(logs) {
     sampleDateAndMood = logs.map(mapDateAndMood);
+
+    $('#chart-1-head').html("Track your progress here:");
+    $('#chart-1-head').addClass("remove-margin-bottom");
 
     // Create the data table.
     var data = new google.visualization.DataTable();
@@ -948,6 +964,7 @@ function makeUserChart1(logs) {
 
 function makeUserChart2(logs) {
     sampleDateAndMood = logs.map(mapDateAndMood);
+    $('#chart-2-head').html("Days logged:");
 
     var dataTable = new google.visualization.DataTable();
     dataTable.addColumn({ type: 'date', id: 'Date' });
