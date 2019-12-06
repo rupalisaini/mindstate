@@ -19,15 +19,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="scripts.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="tipso/src/tipso.css">
+    <script src="tipso/src/tipso.js"></script>
+    <link rel="stylesheet" href="tipso/demo/animate.css">
 </head>
 
 <body class="is-dark">
 <div id="root">
 <nav class="navbar" role="navigation" id="navbar" aria-label="main navigation"></nav>
 <div class="columns-custom">
-    <div class="column1" id="user-history"></div>
+    <div class="column1">
+            <div id="name-banner"></div>
+            <div id="user-history"></div>
+   </div>
     <div class="column2">
         <div class="day-form">
+            <div class="title is-4">Fill today's log:</div>   
+            <hr>         
             <div class="field">
                 <label class="label">Date:</label>
                 <div class="control">
@@ -59,7 +67,7 @@
             </div>
 
             <div class="field">
-                    <label class="label">Tags:</label>
+                    <label class="label">Tag:</label>
                     <div class="control">
                         <input class="input" type="text" id="log-tags" placeholder="Tag your log">
                     </div>
@@ -79,10 +87,15 @@
             <div class="line-chart-heading" id="chart-1-head"></div>
             <div id="myProgressChart"></div>
         </div>
+        <div class="you-right-block orange-bg">
+            <div class="line-chart-heading" id="chart-3-head"></div>
+            <div class="opacity" id="myBarChart"></div>
+        </div>
         <div class="you-right-block white-bg">
             <div class="calendar-chart-heading" id="chart-2-head"></div>
             <div class="opacity" id="myYearChart"></div>
         </div>
+        
     </div>
   </div>
 </div>
