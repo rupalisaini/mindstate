@@ -205,14 +205,14 @@ html{
     text-align: left;
     white-space: nowrap;
     width: 100%;
-  }
-  
-  .ui-menu-item:hover{
+}
+
+.ui-menu-item:hover{
     background-color: whitesmoke;
     color: #0a0a0a;
-  }
+}
 
-  .ui-menu{
+.ui-menu{
     left: 0;
     min-width: 12rem;
     padding-top: 4px;
@@ -221,7 +221,11 @@ html{
     z-index: 20;
     border: 0.1px solid whitesmoke;
     border-radius: 5px;
-  }
+}
+
+.ui-helper-hidden-accessible{
+    display:none !important;
+}
 
 .progress-tip{
     padding: 20px;

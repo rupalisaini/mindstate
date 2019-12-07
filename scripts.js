@@ -580,12 +580,12 @@ $(document).ready(() => {
 
     if(window.location.href == "http://localhost:3001/you.html"){
         google.charts.load('current', {'packages':['corechart', 'line', 'calendar']});
-        google.charts.setOnLoadCallback(renderUserPage);    
-        $("#log-tags" ).autocomplete({
+        google.charts.setOnLoadCallback(renderUserPage);
+        $("#log-tags").autocomplete({
             source: [ "Work", "Friends", "Relationship", "School", "Health", "Hobby", "Stranger", "Self-Care", "Food" ],
             delay: 600,
         });
-    } else if(window.location.href == "http://localhost:3001/world.html"){
+    } else if (window.location.href == "http://localhost:3001/world.html"){
         getWorldHistory()
         let jwt = localStorage.getItem('jwt');
         if(jwt == undefined){
@@ -818,7 +818,7 @@ logOut = function(event){
 }
 
 logDay = async function(event){
-    event.preventDefault();
+    //event.preventDefault();
     let date = $('#log-date').val();
     let how = $('#how-was-it').val();
     let about = $('#about').val();
@@ -835,7 +835,7 @@ logDay = async function(event){
     let r = axios.post('http://localhost:3000/public/logs',
     {
         'data': [{
-            date: date,
+            date: new Date(date),
             how: how
         }],
         'type': 'merge'
@@ -860,13 +860,17 @@ logDay = async function(event){
 
     a.then(result => {
         console.log(result.data);
+        $('#log-date').val("");
+        $('#how-was-it').val("");
+        $('#about').val("");
+        $('#log-tags').val("");
+        renderUserPage();
     }).catch(err => {
         console.log(err);
     });
 }
 
-logPost = async function(event){
-    event.preventDefault();
+async function logPost() {
     let jwt = localStorage.getItem('jwt');
     let user = localStorage.getItem('user');
     let id = localStorage.getItem('id');
@@ -889,13 +893,15 @@ logPost = async function(event){
     a.then(result => {
         console.log(result.data);
         localStorage.setItem('id', newId);
+        $("#log-post-content").val("");
+        getPosts();
     }).catch(err => {
         console.log(err);
     });
 }
 
 deletePost = async function(event){
-    event.preventDefault();
+    //event.preventDefault();
     console.log(this.id);
     let id = this.id;
     let jwt = localStorage.getItem('jwt');
@@ -906,6 +912,7 @@ deletePost = async function(event){
 
     r.then(response => {
         console.log(response.data);
+        getPosts();
     }).catch(error => {
         console.log(error);
     });
@@ -944,7 +951,6 @@ async function getWorldHistory(){
     }).catch(error => {
         console.log(error);
     });
-
 }
 
 function fillWorldHistoryLog(logs){
@@ -988,7 +994,7 @@ function renderPostForm(){
                     </div>
                 </div>
                 </div> `);
-    $('#world-right-col').append(form);
+    $('#feed-form').append(form);
 }
 
 async function getPosts(){
@@ -1030,8 +1036,8 @@ function renderPostFeed(posts){
 
         feed.append(post);
     });
-
-    $('#world-right-col').append(feed);
+    $('#feed').empty();
+    $('#feed').append(feed);
 }
 
 async function renderUserPage(){
@@ -1044,6 +1050,8 @@ async function renderUserPage(){
 
     b.then(response => {
         let logs = response.data.result.sort(compareNew);
+        makeUserChart2(logs);
+        makeUserChart3(logs);
         console.log(response.data.result);
         fillUserHistoryLog(logs);
         if (response.data.result.length > 1) {
@@ -1052,8 +1060,6 @@ async function renderUserPage(){
         } else {
             $('#chart-1-head').html("Log more days to track your progress!");
         }
-        makeUserChart2(response.data.result);
-        makeUserChart3(response.data.result);
     }).catch(error => {
         console.log(error);
         $('#chart-1-head').html("Log some days to track your progress!");
@@ -1073,7 +1079,7 @@ async function renderUserPage(){
     c.then(response => {
         console.log(response.data.result);
         let name = response.data.result.name;
-        let $name = $("#name-banner")
+        let $name = $("#name-banner");
         $name.addClass("name-banner");
         $name.html("Welcome, " + name + "! Happy tracking :)");
         let button = $("<a class='button is-small is-success float-right is-inverted is-outlined' id='edit-profile' href='edit-profile.html'>Edit Profile</a>");
@@ -1091,6 +1097,7 @@ async function renderUserPage(){
 function fillUserHistoryLog(logs){
     console.log(logs);
     $root = $("#user-history");
+    $root.empty();
 
     //predefined color choices for each mood
     colors = ["#E66641", "#F29A4D", "#FCCE00", "#73C38F", "#00ABB7"];
@@ -1312,58 +1319,125 @@ function mapMoodFreq(a){
 async function addExtra(){
     //sampleDateAndMood = sampleArrWorld.map(mapDateAndMoodObject);
     let jwt = localStorage.getItem('jwt');
-    let logs = [{
-        "date": "2020-11-09T05:00:00.000Z",
-        "how": "3",
-        "about": "asdjfoiasjdfads fa;osdifjaos;difj as;odifja sdfo;ijasdo;fiajsdfioajsdfiasdlkfjnasdfjansdfkjnasd fjkasdfa sdjfaoisdfjasoidfj asoidfja sodifja sdoifj asiodfjasdiofj asoidf jaosidfj asoidfjaf"
-      },
-      {
-        "date": "2021-11-07T04:00:00.000Z",
-        "how": "4",
-        "about": "asd;fklasdf asdfjasdoif ajsoifd asiodfjaosidf jasidjf kalsd flaskdfj alskdfj aksldf asdlkfj asdlkfj alskdfj aklsdf jalskdf jalsdkjf alskdfj alsdkfj asdlkfjas dflkjasd fklasjd fklasdjf laskdf alsdkjf asldfkj asd;lfkasj df;asldkfj as;fdlk af"
-      },
-      {
-        "date": "2020-04-11T04:00:00.000Z",
-        "how": "3",
-        "about": "fsjao;idf a;oidfj a;sodifja sodifja dsfoijas difojas ;dfjaslkdf alsk;dfj alksdfja osdfijaos;idfjaosdifja sodifjasoidf a;osdifasifajsd;ofi jasdfo;ijasdf "
-      },
-      {
-        "date": "2021-12-05T05:00:00.000Z",
-        "how": "4",
-        "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-      {
-        "date": "2020-02-03T05:00:00.000Z",
-        "how": "5",
-        "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-      {
-        "date": "2020-02-03T05:00:00.000Z",
-        "how": "4",
-        "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-      {
-        "date": "2020-02-04T05:00:00.000Z",
-        "how": "1",
-        "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in vatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-      {
-        "date": "2021-11-09T05:00:00.000Z",
-        "how": "5",
-        "about": "Lorem ipsum dolor sit left, consectetur adipisicing elit. Minima top nostrum, quia inventore ullam consequuntur velit right fuga officiis non repellendus ea qui nihil delectus, bottom eligendi accusamus ratione odio.\n",
-        "tag": "Work"
-      },
-      {
-        "date": "2021-12-04T05:00:00.000Z",
-        "how": "2",
-        "about": "adsfjasdofijas dfoaisdjfasdofijasdo;fija",
-        "tag": "sifjaosdifjads"
-      }]
+    let logs = [
+        {
+          "date": "2020-11-09T05:00:00.000Z",
+          "how": "3",
+          "about": "asdjfoiasjdfads fa;osdifjaos;difj as;odifja sdfo;ijasdo;fiajsdfioajsdfiasdlkfjnasdfjansdfkjnasd fjkasdfa sdjfaoisdfjasoidfj asoidfja sodifja sdoifj asiodfjasdiofj asoidf jaosidfj asoidfjaf"
+        },
+        {
+          "date": "2021-11-07T04:00:00.000Z",
+          "how": "4",
+          "about": "asd;fklasdf asdfjasdoif ajsoifd asiodfjaosidf jasidjf kalsd flaskdfj alskdfj aksldf asdlkfj asdlkfj alskdfj aklsdf jalskdf jalsdkjf alskdfj alsdkfj asdlkfjas dflkjasd fklasjd fklasdjf laskdf alsdkjf asldfkj asd;lfkasj df;asldkfj as;fdlk af"
+        },
+        {
+          "date": "2020-04-11T04:00:00.000Z",
+          "how": "3",
+          "about": "fsjao;idf a;oidfj a;sodifja sodifja dsfoijas difojas ;dfjaslkdf alsk;dfj alksdfja osdfijaos;idfjaosdifja sodifjasoidf a;osdifasifajsd;ofi jasdfo;ijasdf "
+        },
+        {
+          "date": "2021-12-05T05:00:00.000Z",
+          "how": "4",
+          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        },
+        {
+          "date": "2020-02-03T05:00:00.000Z",
+          "how": "5",
+          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        },
+        {
+          "date": "2020-02-03T05:00:00.000Z",
+          "how": "4",
+          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        },
+        {
+          "date": "2020-02-04T05:00:00.000Z",
+          "how": "1",
+          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in vatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        },
+        {
+          "date": "2021-11-09T05:00:00.000Z",
+          "how": "5",
+          "about": "Lorem ipsum dolor sit left, consectetur adipisicing elit. Minima top nostrum, quia inventore ullam consequuntur velit right fuga officiis non repellendus ea qui nihil delectus, bottom eligendi accusamus ratione odio.\n",
+          "tag": "Work"
+        },
+        {
+          "date": "2021-12-04T05:00:00.000Z",
+          "how": "2",
+          "about": "adsfjasdofijas dfoaisdjfasdofijasdo;fija",
+          "tag": "sifjaosdifjads"
+        },
+        {
+          "date": "2020-08-03T04:00:00.000Z",
+          "how": "5",
+          "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
+          "tag": "Friends"
+        },
+        {
+          "date": "2020-08-03T04:00:00.000Z",
+          "how": "5",
+          "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
+          "tag": "Friends"
+        },
+        {
+          "date": "2020-03-24T04:00:00.000Z",
+          "how": "4",
+          "about": "It was alright. I got a lot of work done.",
+          "tag": "Work"
+        },
+        {
+          "date": "2020-03-24T04:00:00.000Z",
+          "how": "4",
+          "about": "It was alright. I got a lot of work done.",
+          "tag": "Work"
+        },
+        {
+          "date": "2020-08-30T04:00:00.000Z",
+          "how": "2",
+          "about": "It could be worse.",
+          "tag": "rel"
+        },
+        {
+          "date": "2020-08-30T04:00:00.000Z",
+          "how": "2",
+          "about": "It could be worse.",
+          "tag": "Relationship"
+        },
+        {
+          "date": "2020-07-22T04:00:00.000Z",
+          "how": "3",
+          "about": "Chicken",
+          "tag": "Friends"
+        },
+        {
+          "date": "2020-07-22T04:00:00.000Z",
+          "how": "3",
+          "about": "Chicken",
+          "tag": "frie"
+        },
+        {
+          "date": "2020-03-20T04:00:00.000Z",
+          "how": "4",
+          "about": "fasdjfaiosdjfa;iosdfj",
+          "tag": "Friends"
+        },
+        {
+          "date": "2020-03-20T04:00:00.000Z",
+          "how": "4",
+          "about": "fasdjfaiosdjfa;iosdfj",
+          "tag": "Friends"
+        },
+        {
+          "date": "2019-07-05T04:00:00.000Z",
+          "how": "5",
+          "about": "dafoisjdf;aijsdf",
+          "tag": "Friends"
+        }
+      ]
 
     let r = axios.post('http://localhost:3000/user/logs',
     {
         'data': logs,
-        'type': 'merge'
     },
     {
         headers: { "Authorization": "Bearer " + jwt }
@@ -1379,7 +1453,7 @@ async function addExtra(){
 
 async function clear(){
     let jwt = localStorage.getItem('jwt');
-    let r = axios.delete('http://localhost:3000/private/posts/1',
+    let r = axios.delete('http://localhost:3000/user/logs',
     {
         headers: { "Authorization": "Bearer " + jwt }
     });
