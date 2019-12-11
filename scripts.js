@@ -602,6 +602,9 @@ $(document).ready(() => {
 
 function renderNavBar(){
     let navbar = $(`<div class="navbar-brand">
+                    <a class="icon-nav" padding-right="0px" href="world.html">
+                    <img src="logo2.png" width="40" height="40" >
+                    </a>
                     <h1 class="navbar-item">
                         <strong>Mind Rewind</strong>
                     </h1>
@@ -623,7 +626,7 @@ function renderNavBar(){
                         </a>
 
                         <div class="navbar-dropdown">
-                        <a class="navbar-item">
+                        <a class="navbar-item" href="about.html">
                             About
                         </a>
                         </div>
@@ -919,8 +922,8 @@ deletePost = async function(event){
 }
 
 function compareNew(a, b) {
-    const dateA = a.date;
-    const dateB = b.date;
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
     let comparison = 0;
     if (dateA > dateB) {
       comparison = -1;
@@ -931,8 +934,8 @@ function compareNew(a, b) {
 }
 
 function compareOld(a, b) {
-    const dateA = a.date;
-    const dateB = b.date;
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
     let comparison = 0;
     if (dateA > dateB) {
       comparison = 1;
@@ -958,7 +961,8 @@ function fillWorldHistoryLog(logs){
     colors = ["#E66641", "#F29A4D", "#FCCE00", "#73C38F", "#00ABB7"];
 
     //create year table with rows and cells appended with corresponding colors
-    $table = $("#progress-world");
+    $root = $("#world-progress");
+    $table = $(`<div class="progress-report progress-table-world" id="progress-world"></div>`);
     let id = 0;
     let i;
     let count = 0;
@@ -976,6 +980,7 @@ function fillWorldHistoryLog(logs){
         $table.append(row);
         count++;
     }
+    $root.append($table);
 }
 
 function renderPostForm(){
@@ -1023,7 +1028,6 @@ function renderPostFeed(posts){
         console.log(posts[key]);
         let curr = posts[key];
         let post = $('<div class="post" id="post' + key + '"></div>');
-
         if(curr.user == user){
             post.append("<button class='delete float-right' id = '" + key + "' type='button'>Delete</button>")
         }
@@ -1033,7 +1037,6 @@ function renderPostFeed(posts){
         let textBlock = $("<div id='block-post" + key + "'></div>")
         textBlock.append(`<div id = "text` + key + `" class='text-post'>` + curr.content + `</div>`);
         post.append(textBlock);
-
         feed.append(post);
     });
     $('#feed').empty();
@@ -1050,14 +1053,14 @@ async function renderUserPage(){
 
     b.then(response => {
         let logs = response.data.result.sort(compareNew);
-        makeUserChart2(logs);
-        makeUserChart3(logs);
         console.log(response.data.result);
         fillUserHistoryLog(logs);
         if (response.data.result.length > 1) {
             let logsOld = response.data.result.sort(compareOld);
             makeUserChart1(logsOld);
-        } else {
+            makeUserChart2(logsOld);
+            makeUserChart3(logsOld);
+            } else {
             $('#chart-1-head').html("Log more days to track your progress!");
         }
     }).catch(error => {
@@ -1195,7 +1198,10 @@ function makeUserChart1(logs) {
 }
 
 function makeUserChart2(logs) {
-    sampleDateAndMood = logs.map(mapDateAndMood);
+    let filtered = logs.filter(filterMapYear);
+    let sampleDateAndMood = filtered.map(mapDateAndMood);
+    console.log("filtered data");
+    console.log(sampleDateAndMood);
     $('#chart-2-head').html("Days logged:");
 
     var dataTable = new google.visualization.DataTable();
@@ -1316,128 +1322,588 @@ function mapMoodFreq(a){
     return freq;
 }
 
+function filterMapYear(a){
+    let date = new Date(a.date);
+    let today = new Date();
+    if(date.getFullYear() == today.getFullYear()){
+        return true;
+    }
+    return false;
+}
+
 async function addExtra(){
     //sampleDateAndMood = sampleArrWorld.map(mapDateAndMoodObject);
     let jwt = localStorage.getItem('jwt');
-    let logs = [
-        {
-          "date": "2020-11-09T05:00:00.000Z",
-          "how": "3",
-          "about": "asdjfoiasjdfads fa;osdifjaos;difj as;odifja sdfo;ijasdo;fiajsdfioajsdfiasdlkfjnasdfjansdfkjnasd fjkasdfa sdjfaoisdfjasoidfj asoidfja sodifja sdoifj asiodfjasdiofj asoidf jaosidfj asoidfjaf"
-        },
-        {
-          "date": "2021-11-07T04:00:00.000Z",
-          "how": "4",
-          "about": "asd;fklasdf asdfjasdoif ajsoifd asiodfjaosidf jasidjf kalsd flaskdfj alskdfj aksldf asdlkfj asdlkfj alskdfj aklsdf jalskdf jalsdkjf alskdfj alsdkfj asdlkfjas dflkjasd fklasjd fklasdjf laskdf alsdkjf asldfkj asd;lfkasj df;asldkfj as;fdlk af"
-        },
-        {
-          "date": "2020-04-11T04:00:00.000Z",
-          "how": "3",
-          "about": "fsjao;idf a;oidfj a;sodifja sodifja dsfoijas difojas ;dfjaslkdf alsk;dfj alksdfja osdfijaos;idfjaosdifja sodifjasoidf a;osdifasifajsd;ofi jasdfo;ijasdf "
-        },
-        {
-          "date": "2021-12-05T05:00:00.000Z",
-          "how": "4",
-          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        },
-        {
-          "date": "2020-02-03T05:00:00.000Z",
-          "how": "5",
-          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        },
-        {
-          "date": "2020-02-03T05:00:00.000Z",
-          "how": "4",
-          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        },
-        {
-          "date": "2020-02-04T05:00:00.000Z",
-          "how": "1",
-          "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in vatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        },
-        {
-          "date": "2021-11-09T05:00:00.000Z",
-          "how": "5",
-          "about": "Lorem ipsum dolor sit left, consectetur adipisicing elit. Minima top nostrum, quia inventore ullam consequuntur velit right fuga officiis non repellendus ea qui nihil delectus, bottom eligendi accusamus ratione odio.\n",
-          "tag": "Work"
-        },
-        {
-          "date": "2021-12-04T05:00:00.000Z",
-          "how": "2",
-          "about": "adsfjasdofijas dfoaisdjfasdofijasdo;fija",
-          "tag": "sifjaosdifjads"
-        },
-        {
-          "date": "2020-08-03T04:00:00.000Z",
-          "how": "5",
-          "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
-          "tag": "Friends"
-        },
-        {
-          "date": "2020-08-03T04:00:00.000Z",
-          "how": "5",
-          "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
-          "tag": "Friends"
-        },
-        {
-          "date": "2020-03-24T04:00:00.000Z",
-          "how": "4",
-          "about": "It was alright. I got a lot of work done.",
-          "tag": "Work"
-        },
-        {
-          "date": "2020-03-24T04:00:00.000Z",
-          "how": "4",
-          "about": "It was alright. I got a lot of work done.",
-          "tag": "Work"
-        },
-        {
-          "date": "2020-08-30T04:00:00.000Z",
-          "how": "2",
-          "about": "It could be worse.",
-          "tag": "rel"
-        },
-        {
-          "date": "2020-08-30T04:00:00.000Z",
-          "how": "2",
-          "about": "It could be worse.",
-          "tag": "Relationship"
-        },
-        {
-          "date": "2020-07-22T04:00:00.000Z",
-          "how": "3",
-          "about": "Chicken",
-          "tag": "Friends"
-        },
-        {
-          "date": "2020-07-22T04:00:00.000Z",
-          "how": "3",
-          "about": "Chicken",
-          "tag": "frie"
-        },
-        {
-          "date": "2020-03-20T04:00:00.000Z",
-          "how": "4",
-          "about": "fasdjfaiosdjfa;iosdfj",
-          "tag": "Friends"
-        },
-        {
-          "date": "2020-03-20T04:00:00.000Z",
-          "how": "4",
-          "about": "fasdjfaiosdjfa;iosdfj",
-          "tag": "Friends"
-        },
-        {
-          "date": "2019-07-05T04:00:00.000Z",
-          "how": "5",
-          "about": "dafoisjdf;aijsdf",
-          "tag": "Friends"
-        }
-      ]
+    var data = [{"date":"04/08/2019","how":1},
+    {"date":"12/21/2018","how":3},
+    {"date":"03/22/2019","how":2},
+    {"date":"11/28/2019","how":2},
+    {"date":"09/04/2019","how":5},
+    {"date":"09/21/2019","how":1},
+    {"date":"05/12/2019","how":1},
+    {"date":"09/11/2019","how":1},
+    {"date":"11/29/2019","how":5},
+    {"date":"06/17/2019","how":3},
+    {"date":"01/08/2019","how":2},
+    {"date":"06/17/2019","how":1},
+    {"date":"06/18/2019","how":2},
+    {"date":"06/04/2019","how":5},
+    {"date":"08/16/2019","how":4},
+    {"date":"11/19/2019","how":2},
+    {"date":"06/26/2019","how":1},
+    {"date":"01/08/2019","how":1},
+    {"date":"06/01/2019","how":4},
+    {"date":"04/04/2019","how":1},
+    {"date":"07/24/2019","how":3},
+    {"date":"12/02/2019","how":4},
+    {"date":"10/14/2019","how":4},
+    {"date":"08/10/2019","how":1},
+    {"date":"04/23/2019","how":3},
+    {"date":"10/14/2019","how":3},
+    {"date":"11/29/2019","how":2},
+    {"date":"10/31/2019","how":5},
+    {"date":"01/09/2019","how":2},
+    {"date":"03/10/2019","how":2},
+    {"date":"11/15/2019","how":4},
+    {"date":"12/07/2019","how":2},
+    {"date":"05/12/2019","how":3},
+    {"date":"04/01/2019","how":4},
+    {"date":"03/11/2019","how":4},
+    {"date":"05/20/2019","how":4},
+    {"date":"05/11/2019","how":1},
+    {"date":"05/12/2019","how":5},
+    {"date":"04/19/2019","how":1},
+    {"date":"11/23/2019","how":2},
+    {"date":"05/24/2019","how":5},
+    {"date":"08/02/2019","how":5},
+    {"date":"03/03/2019","how":2},
+    {"date":"04/15/2019","how":1},
+    {"date":"04/27/2019","how":1},
+    {"date":"12/01/2019","how":2},
+    {"date":"04/07/2019","how":2},
+    {"date":"08/11/2019","how":1},
+    {"date":"09/21/2019","how":2},
+    {"date":"08/29/2019","how":1},
+    {"date":"03/10/2019","how":3},
+    {"date":"10/31/2019","how":5},
+    {"date":"01/08/2019","how":3},
+    {"date":"08/19/2019","how":2},
+    {"date":"08/20/2019","how":2},
+    {"date":"05/22/2019","how":1},
+    {"date":"12/13/2018","how":1},
+    {"date":"11/03/2019","how":5},
+    {"date":"12/14/2018","how":1},
+    {"date":"02/16/2019","how":3},
+    {"date":"02/05/2019","how":3},
+    {"date":"11/06/2019","how":3},
+    {"date":"04/03/2019","how":3},
+    {"date":"01/14/2019","how":1},
+    {"date":"08/15/2019","how":2},
+    {"date":"03/18/2019","how":3},
+    {"date":"04/28/2019","how":1},
+    {"date":"10/25/2019","how":1},
+    {"date":"08/06/2019","how":1},
+    {"date":"04/07/2019","how":5},
+    {"date":"08/21/2019","how":1},
+    {"date":"06/14/2019","how":1},
+    {"date":"03/20/2019","how":3},
+    {"date":"11/05/2019","how":5},
+    {"date":"08/03/2019","how":2},
+    {"date":"09/30/2019","how":5},
+    {"date":"11/26/2019","how":2},
+    {"date":"06/03/2019","how":1},
+    {"date":"09/04/2019","how":2},
+    {"date":"12/11/2018","how":4},
+    {"date":"08/10/2019","how":3},
+    {"date":"02/05/2019","how":1},
+    {"date":"09/22/2019","how":1},
+    {"date":"04/29/2019","how":2},
+    {"date":"12/16/2018","how":1},
+    {"date":"03/12/2019","how":2},
+    {"date":"08/10/2019","how":5},
+    {"date":"06/05/2019","how":5},
+    {"date":"12/05/2019","how":1},
+    {"date":"01/09/2019","how":5},
+    {"date":"09/27/2019","how":4},
+    {"date":"06/23/2019","how":2},
+    {"date":"06/05/2019","how":1},
+    {"date":"01/12/2019","how":2},
+    {"date":"11/24/2019","how":2},
+    {"date":"03/16/2019","how":4},
+    {"date":"10/04/2019","how":3},
+    {"date":"03/15/2019","how":3},
+    {"date":"05/30/2019","how":2},
+    {"date":"01/02/2019","how":1},
+    {"date":"04/24/2019","how":5},
+    {"date":"11/19/2019","how":5},
+    {"date":"04/22/2019","how":3},
+    {"date":"03/28/2019","how":2},
+    {"date":"10/24/2019","how":1},
+    {"date":"01/06/2019","how":3},
+    {"date":"11/11/2019","how":5},
+    {"date":"04/22/2019","how":3},
+    {"date":"06/06/2019","how":4},
+    {"date":"05/07/2019","how":5},
+    {"date":"08/02/2019","how":2},
+    {"date":"04/04/2019","how":3},
+    {"date":"09/11/2019","how":1},
+    {"date":"08/16/2019","how":5},
+    {"date":"08/30/2019","how":1},
+    {"date":"05/02/2019","how":3},
+    {"date":"09/14/2019","how":3},
+    {"date":"04/23/2019","how":3},
+    {"date":"06/05/2019","how":3},
+    {"date":"10/28/2019","how":3},
+    {"date":"03/12/2019","how":3},
+    {"date":"10/19/2019","how":1},
+    {"date":"04/22/2019","how":4},
+    {"date":"06/06/2019","how":4},
+    {"date":"03/22/2019","how":3},
+    {"date":"01/29/2019","how":5},
+    {"date":"10/04/2019","how":4},
+    {"date":"06/13/2019","how":5},
+    {"date":"08/17/2019","how":5},
+    {"date":"01/16/2019","how":4},
+    {"date":"08/09/2019","how":4},
+    {"date":"12/19/2018","how":3},
+    {"date":"09/09/2019","how":5},
+    {"date":"05/29/2019","how":2},
+    {"date":"05/10/2019","how":4},
+    {"date":"07/27/2019","how":5},
+    {"date":"10/26/2019","how":3},
+    {"date":"09/24/2019","how":3},
+    {"date":"09/17/2019","how":3},
+    {"date":"05/22/2019","how":3},
+    {"date":"03/23/2019","how":3},
+    {"date":"03/14/2019","how":4},
+    {"date":"03/28/2019","how":2},
+    {"date":"08/15/2019","how":3},
+    {"date":"03/31/2019","how":3},
+    {"date":"04/29/2019","how":1},
+    {"date":"08/31/2019","how":3},
+    {"date":"11/24/2019","how":4},
+    {"date":"05/03/2019","how":5},
+    {"date":"03/21/2019","how":2},
+    {"date":"06/16/2019","how":1},
+    {"date":"07/29/2019","how":5},
+    {"date":"09/14/2019","how":2},
+    {"date":"04/05/2019","how":1},
+    {"date":"06/29/2019","how":5},
+    {"date":"01/17/2019","how":4},
+    {"date":"06/04/2019","how":1},
+    {"date":"10/19/2019","how":4},
+    {"date":"10/14/2019","how":5},
+    {"date":"08/14/2019","how":2},
+    {"date":"08/10/2019","how":4},
+    {"date":"06/06/2019","how":4},
+    {"date":"04/22/2019","how":5},
+    {"date":"07/07/2019","how":2},
+    {"date":"05/04/2019","how":3},
+    {"date":"09/20/2019","how":4},
+    {"date":"07/01/2019","how":2},
+    {"date":"03/27/2019","how":3},
+    {"date":"09/29/2019","how":4},
+    {"date":"12/26/2018","how":3},
+    {"date":"02/06/2019","how":4},
+    {"date":"10/28/2019","how":3},
+    {"date":"10/11/2019","how":3},
+    {"date":"12/26/2018","how":5},
+    {"date":"09/15/2019","how":5},
+    {"date":"12/24/2018","how":3},
+    {"date":"05/25/2019","how":2},
+    {"date":"06/16/2019","how":1},
+    {"date":"05/02/2019","how":2},
+    {"date":"10/30/2019","how":4},
+    {"date":"07/15/2019","how":4},
+    {"date":"11/22/2019","how":5},
+    {"date":"08/18/2019","how":1},
+    {"date":"05/14/2019","how":3},
+    {"date":"06/08/2019","how":5},
+    {"date":"08/03/2019","how":5},
+    {"date":"10/04/2019","how":5},
+    {"date":"06/03/2019","how":2},
+    {"date":"10/02/2019","how":5},
+    {"date":"08/27/2019","how":5},
+    {"date":"01/31/2019","how":2},
+    {"date":"05/01/2019","how":3},
+    {"date":"06/14/2019","how":3},
+    {"date":"05/24/2019","how":3},
+    {"date":"01/21/2019","how":3},
+    {"date":"07/15/2019","how":3},
+    {"date":"02/15/2019","how":3},
+    {"date":"12/09/2019","how":4},
+    {"date":"12/21/2018","how":2},
+    {"date":"08/24/2019","how":4},
+    {"date":"11/26/2019","how":2},
+    {"date":"11/14/2019","how":5},
+    {"date":"09/23/2019","how":4},
+    {"date":"03/09/2019","how":1},
+    {"date":"11/11/2019","how":5},
+    {"date":"06/11/2019","how":2},
+    {"date":"01/31/2019","how":3},
+    {"date":"02/08/2019","how":3},
+    {"date":"01/06/2019","how":1},
+    {"date":"09/25/2019","how":4},
+    {"date":"05/18/2019","how":3},
+    {"date":"03/29/2019","how":1},
+    {"date":"05/03/2019","how":3},
+    {"date":"06/27/2019","how":2},
+    {"date":"02/22/2019","how":5},
+    {"date":"08/01/2019","how":3},
+    {"date":"05/25/2019","how":2},
+    {"date":"10/11/2019","how":5},
+    {"date":"08/22/2019","how":1},
+    {"date":"04/06/2019","how":4},
+    {"date":"08/15/2019","how":3},
+    {"date":"05/24/2019","how":5},
+    {"date":"08/23/2019","how":3},
+    {"date":"05/02/2019","how":3},
+    {"date":"09/07/2019","how":1},
+    {"date":"12/30/2018","how":2},
+    {"date":"01/27/2019","how":2},
+    {"date":"12/06/2019","how":5},
+    {"date":"02/07/2019","how":4},
+    {"date":"04/12/2019","how":2},
+    {"date":"06/04/2019","how":5},
+    {"date":"07/29/2019","how":3},
+    {"date":"01/15/2019","how":4},
+    {"date":"11/27/2019","how":1},
+    {"date":"11/28/2019","how":3},
+    {"date":"04/14/2019","how":4},
+    {"date":"08/19/2019","how":2},
+    {"date":"04/24/2019","how":2},
+    {"date":"03/25/2019","how":4},
+    {"date":"04/26/2019","how":1},
+    {"date":"03/11/2019","how":1},
+    {"date":"08/20/2019","how":1},
+    {"date":"06/24/2019","how":5},
+    {"date":"01/15/2019","how":2},
+    {"date":"11/01/2019","how":4},
+    {"date":"09/04/2019","how":5},
+    {"date":"05/11/2019","how":2},
+    {"date":"09/07/2019","how":1},
+    {"date":"09/09/2019","how":2},
+    {"date":"01/19/2019","how":5},
+    {"date":"10/14/2019","how":3},
+    {"date":"10/25/2019","how":2},
+    {"date":"10/25/2019","how":4},
+    {"date":"04/10/2019","how":3},
+    {"date":"04/09/2019","how":2},
+    {"date":"02/16/2019","how":1},
+    {"date":"08/19/2019","how":2},
+    {"date":"04/24/2019","how":1},
+    {"date":"06/25/2019","how":1},
+    {"date":"10/31/2019","how":5},
+    {"date":"07/10/2019","how":1},
+    {"date":"01/12/2019","how":2},
+    {"date":"12/11/2018","how":4},
+    {"date":"03/23/2019","how":4},
+    {"date":"11/01/2019","how":3},
+    {"date":"10/29/2019","how":3},
+    {"date":"08/11/2019","how":5},
+    {"date":"05/24/2019","how":1},
+    {"date":"08/21/2019","how":4},
+    {"date":"02/24/2019","how":1},
+    {"date":"12/11/2018","how":2},
+    {"date":"03/23/2019","how":4},
+    {"date":"12/14/2018","how":4},
+    {"date":"11/26/2019","how":1},
+    {"date":"11/17/2019","how":2},
+    {"date":"01/08/2019","how":2},
+    {"date":"04/04/2019","how":4},
+    {"date":"07/26/2019","how":2},
+    {"date":"05/24/2019","how":1},
+    {"date":"03/28/2019","how":2},
+    {"date":"10/09/2019","how":2},
+    {"date":"07/27/2019","how":4},
+    {"date":"08/23/2019","how":4},
+    {"date":"11/28/2019","how":2},
+    {"date":"12/16/2018","how":5},
+    {"date":"10/08/2019","how":1},
+    {"date":"05/27/2019","how":5},
+    {"date":"07/27/2019","how":4},
+    {"date":"04/03/2019","how":3},
+    {"date":"10/01/2019","how":5},
+    {"date":"01/15/2019","how":1},
+    {"date":"06/19/2019","how":1},
+    {"date":"05/24/2019","how":5},
+    {"date":"10/21/2019","how":3},
+    {"date":"01/22/2019","how":2},
+    {"date":"06/20/2019","how":1},
+    {"date":"04/27/2019","how":3},
+    {"date":"12/17/2018","how":3},
+    {"date":"04/24/2019","how":1},
+    {"date":"01/15/2019","how":4},
+    {"date":"08/30/2019","how":5},
+    {"date":"06/06/2019","how":5},
+    {"date":"09/28/2019","how":4},
+    {"date":"07/04/2019","how":1},
+    {"date":"09/08/2019","how":3},
+    {"date":"04/27/2019","how":3},
+    {"date":"10/12/2019","how":3},
+    {"date":"03/09/2019","how":4},
+    {"date":"04/09/2019","how":4},
+    {"date":"07/06/2019","how":5},
+    {"date":"10/27/2019","how":1},
+    {"date":"11/27/2019","how":5},
+    {"date":"02/13/2019","how":4},
+    {"date":"07/28/2019","how":3},
+    {"date":"10/21/2019","how":3},
+    {"date":"05/31/2019","how":4},
+    {"date":"08/05/2019","how":3},
+    {"date":"04/24/2019","how":1},
+    {"date":"04/07/2019","how":2},
+    {"date":"04/09/2019","how":3},
+    {"date":"12/31/2018","how":4},
+    {"date":"06/30/2019","how":3},
+    {"date":"07/26/2019","how":5},
+    {"date":"11/10/2019","how":3},
+    {"date":"12/28/2018","how":1},
+    {"date":"01/05/2019","how":1},
+    {"date":"05/08/2019","how":1},
+    {"date":"09/12/2019","how":2},
+    {"date":"08/23/2019","how":3},
+    {"date":"03/19/2019","how":1},
+    {"date":"01/17/2019","how":3},
+    {"date":"05/07/2019","how":4},
+    {"date":"08/21/2019","how":5},
+    {"date":"06/28/2019","how":2},
+    {"date":"01/14/2019","how":2},
+    {"date":"02/07/2019","how":2},
+    {"date":"02/05/2019","how":3},
+    {"date":"08/21/2019","how":3},
+    {"date":"09/19/2019","how":2},
+    {"date":"05/22/2019","how":1},
+    {"date":"07/10/2019","how":4},
+    {"date":"01/01/2019","how":1},
+    {"date":"02/01/2019","how":2},
+    {"date":"05/15/2019","how":4},
+    {"date":"12/13/2018","how":3},
+    {"date":"05/27/2019","how":1},
+    {"date":"12/30/2018","how":4},
+    {"date":"05/05/2019","how":5},
+    {"date":"08/28/2019","how":1},
+    {"date":"12/03/2019","how":3},
+    {"date":"12/14/2018","how":4},
+    {"date":"03/19/2019","how":3},
+    {"date":"01/12/2019","how":3},
+    {"date":"03/23/2019","how":5},
+    {"date":"05/30/2019","how":3},
+    {"date":"04/20/2019","how":5},
+    {"date":"02/08/2019","how":5},
+    {"date":"04/22/2019","how":2},
+    {"date":"01/27/2019","how":2},
+    {"date":"10/23/2019","how":3},
+    {"date":"02/10/2019","how":3},
+    {"date":"08/04/2019","how":3},
+    {"date":"04/16/2019","how":5},
+    {"date":"01/11/2019","how":5},
+    {"date":"07/27/2019","how":5},
+    {"date":"10/16/2019","how":3},
+    {"date":"07/31/2019","how":3},
+    {"date":"07/22/2019","how":3},
+    {"date":"11/17/2019","how":4},
+    {"date":"02/15/2019","how":5},
+    {"date":"09/09/2019","how":5},
+    {"date":"01/16/2019","how":4},
+    {"date":"07/03/2019","how":4},
+    {"date":"12/02/2019","how":2},
+    {"date":"04/27/2019","how":1},
+    {"date":"02/07/2019","how":1},
+    {"date":"09/18/2019","how":5},
+    {"date":"02/20/2019","how":2},
+    {"date":"10/23/2019","how":5},
+    {"date":"06/29/2019","how":4},
+    {"date":"09/30/2019","how":5},
+    {"date":"10/02/2019","how":4},
+    {"date":"09/12/2019","how":4},
+    {"date":"08/24/2019","how":1},
+    {"date":"08/24/2019","how":4},
+    {"date":"05/24/2019","how":2},
+    {"date":"06/22/2019","how":2},
+    {"date":"02/08/2019","how":5},
+    {"date":"07/24/2019","how":1},
+    {"date":"04/16/2019","how":4},
+    {"date":"02/18/2019","how":4},
+    {"date":"06/15/2019","how":2},
+    {"date":"08/03/2019","how":4},
+    {"date":"07/28/2019","how":2},
+    {"date":"06/08/2019","how":5},
+    {"date":"07/29/2019","how":5},
+    {"date":"10/07/2019","how":3},
+    {"date":"07/09/2019","how":5},
+    {"date":"11/03/2019","how":3},
+    {"date":"12/08/2019","how":1},
+    {"date":"05/04/2019","how":2},
+    {"date":"05/08/2019","how":1},
+    {"date":"05/05/2019","how":3},
+    {"date":"09/08/2019","how":2},
+    {"date":"01/15/2019","how":5},
+    {"date":"09/02/2019","how":2},
+    {"date":"02/28/2019","how":1},
+    {"date":"06/01/2019","how":1},
+    {"date":"08/16/2019","how":2},
+    {"date":"04/23/2019","how":3},
+    {"date":"06/11/2019","how":3},
+    {"date":"06/27/2019","how":1},
+    {"date":"03/01/2019","how":2},
+    {"date":"01/28/2019","how":2},
+    {"date":"08/30/2019","how":1},
+    {"date":"02/15/2019","how":2},
+    {"date":"01/25/2019","how":1},
+    {"date":"07/30/2019","how":4},
+    {"date":"02/09/2019","how":5},
+    {"date":"07/12/2019","how":2},
+    {"date":"07/10/2019","how":2},
+    {"date":"12/07/2019","how":1},
+    {"date":"03/24/2019","how":5},
+    {"date":"07/19/2019","how":3},
+    {"date":"01/20/2019","how":3},
+    {"date":"06/27/2019","how":3},
+    {"date":"11/13/2019","how":2},
+    {"date":"12/03/2019","how":1},
+    {"date":"04/20/2019","how":2},
+    {"date":"06/06/2019","how":3},
+    {"date":"12/10/2018","how":5},
+    {"date":"12/17/2018","how":5},
+    {"date":"04/10/2019","how":1},
+    {"date":"11/17/2019","how":3},
+    {"date":"08/21/2019","how":5},
+    {"date":"01/04/2019","how":1},
+    {"date":"01/29/2019","how":4},
+    {"date":"11/21/2019","how":5},
+    {"date":"01/03/2019","how":1},
+    {"date":"12/17/2018","how":2},
+    {"date":"01/18/2019","how":5},
+    {"date":"09/27/2019","how":5},
+    {"date":"10/29/2019","how":4},
+    {"date":"10/06/2019","how":2},
+    {"date":"05/01/2019","how":2},
+    {"date":"12/29/2018","how":3},
+    {"date":"04/02/2019","how":4},
+    {"date":"05/12/2019","how":2},
+    {"date":"09/04/2019","how":4},
+    {"date":"01/30/2019","how":1}];
+    
+    // let logs = [
+    //     {
+    //       "date": "2020-11-09T05:00:00.000Z",
+    //       "how": "3",
+    //       "about": "asdjfoiasjdfads fa;osdifjaos;difj as;odifja sdfo;ijasdo;fiajsdfioajsdfiasdlkfjnasdfjansdfkjnasd fjkasdfa sdjfaoisdfjasoidfj asoidfja sodifja sdoifj asiodfjasdiofj asoidf jaosidfj asoidfjaf"
+    //     },
+    //     {
+    //       "date": "2021-11-07T04:00:00.000Z",
+    //       "how": "4",
+    //       "about": "asd;fklasdf asdfjasdoif ajsoifd asiodfjaosidf jasidjf kalsd flaskdfj alskdfj aksldf asdlkfj asdlkfj alskdfj aklsdf jalskdf jalsdkjf alskdfj alsdkfj asdlkfjas dflkjasd fklasjd fklasdjf laskdf alsdkjf asldfkj asd;lfkasj df;asldkfj as;fdlk af"
+    //     },
+    //     {
+    //       "date": "2020-04-11T04:00:00.000Z",
+    //       "how": "3",
+    //       "about": "fsjao;idf a;oidfj a;sodifja sodifja dsfoijas difojas ;dfjaslkdf alsk;dfj alksdfja osdfijaos;idfjaosdifja sodifjasoidf a;osdifasifajsd;ofi jasdfo;ijasdf "
+    //     },
+    //     {
+    //       "date": "2021-12-05T05:00:00.000Z",
+    //       "how": "4",
+    //       "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    //     },
+    //     {
+    //       "date": "2020-02-03T05:00:00.000Z",
+    //       "how": "5",
+    //       "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    //     },
+    //     {
+    //       "date": "2020-02-03T05:00:00.000Z",
+    //       "how": "4",
+    //       "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    //     },
+    //     {
+    //       "date": "2020-02-04T05:00:00.000Z",
+    //       "how": "1",
+    //       "about": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in vatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    //     },
+    //     {
+    //       "date": "2021-11-09T05:00:00.000Z",
+    //       "how": "5",
+    //       "about": "Lorem ipsum dolor sit left, consectetur adipisicing elit. Minima top nostrum, quia inventore ullam consequuntur velit right fuga officiis non repellendus ea qui nihil delectus, bottom eligendi accusamus ratione odio.\n",
+    //       "tag": "Work"
+    //     },
+    //     {
+    //       "date": "2021-12-04T05:00:00.000Z",
+    //       "how": "2",
+    //       "about": "adsfjasdofijas dfoaisdjfasdofijasdo;fija",
+    //       "tag": "sifjaosdifjads"
+    //     },
+    //     {
+    //       "date": "2020-08-03T04:00:00.000Z",
+    //       "how": "5",
+    //       "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
+    //       "tag": "Friends"
+    //     },
+    //     {
+    //       "date": "2020-08-03T04:00:00.000Z",
+    //       "how": "5",
+    //       "about": "a;doifjasdfo;ia jsdfoiajsd foaisjdf a;oisdjf asdiofjasdoifj asodifjasdiofjaoisdfo;ia;f oid jafois dfjao;ijsf",
+    //       "tag": "Friends"
+    //     },
+    //     {
+    //       "date": "2020-03-24T04:00:00.000Z",
+    //       "how": "4",
+    //       "about": "It was alright. I got a lot of work done.",
+    //       "tag": "Work"
+    //     },
+    //     {
+    //       "date": "2020-03-24T04:00:00.000Z",
+    //       "how": "4",
+    //       "about": "It was alright. I got a lot of work done.",
+    //       "tag": "Work"
+    //     },
+    //     {
+    //       "date": "2020-08-30T04:00:00.000Z",
+    //       "how": "2",
+    //       "about": "It could be worse.",
+    //       "tag": "rel"
+    //     },
+    //     {
+    //       "date": "2020-08-30T04:00:00.000Z",
+    //       "how": "2",
+    //       "about": "It could be worse.",
+    //       "tag": "Relationship"
+    //     },
+    //     {
+    //       "date": "2020-07-22T04:00:00.000Z",
+    //       "how": "3",
+    //       "about": "Chicken",
+    //       "tag": "Friends"
+    //     },
+    //     {
+    //       "date": "2020-07-22T04:00:00.000Z",
+    //       "how": "3",
+    //       "about": "Chicken",
+    //       "tag": "frie"
+    //     },
+    //     {
+    //       "date": "2020-03-20T04:00:00.000Z",
+    //       "how": "4",
+    //       "about": "fasdjfaiosdjfa;iosdfj",
+    //       "tag": "Friends"
+    //     },
+    //     {
+    //       "date": "2020-03-20T04:00:00.000Z",
+    //       "how": "4",
+    //       "about": "fasdjfaiosdjfa;iosdfj",
+    //       "tag": "Friends"
+    //     },
+    //     {
+    //       "date": "2019-07-05T04:00:00.000Z",
+    //       "how": "5",
+    //       "about": "dafoisjdf;aijsdf",
+    //       "tag": "Friends"
+    //     }
+    //   ]
 
-    let r = axios.post('http://localhost:3000/user/logs',
+    let r = axios.post('http://localhost:3000/public/logs',
     {
-        'data': logs,
+        'data': data,
     },
     {
         headers: { "Authorization": "Bearer " + jwt }
@@ -1453,7 +1919,7 @@ async function addExtra(){
 
 async function clear(){
     let jwt = localStorage.getItem('jwt');
-    let r = axios.delete('http://localhost:3000/user/logs',
+    let r = axios.delete('http://localhost:3000/public/logs',
     {
         headers: { "Authorization": "Bearer " + jwt }
     });
